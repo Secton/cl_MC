@@ -21,8 +21,8 @@ Minecraft [rd-132211](https://minecraft.wiki/w/Java_Edition_pre-Classic_rd-13221
 * The author of this project has bought a Minecraft Java Edition license officially, therefore,
   the author of this project has got the Minecraft rd-132211's `client.jar` legally.
 * This project shall never contain assets (for example, textures) from Mojang Studios' games.
-  If the player wishes to experiment with this project with Mojang Studios' game assets,
-  it is up to them to get assets **legally**.
+  The author of this project takes no responsibility for players using game assets
+  from other games in this project.
 
 ## Changes
 * Custom world format that looks actually like a format (Original rd-132211 has only `byte`s stored in)
