@@ -61,10 +61,10 @@ class Chunk {
                                 bool tex = y != this->level->depth * 2 / 3;
                                 tiles++;
                                 if (!tex) {
-                                    Textures::bind(Textures::blockTextures["Stone"]);
+                                    Textures::bind(Textures::blockTextures["Grass"]);
                                     Tile::render(&t, this->level, layer, x,y,z);
                                 } else {
-                                    Textures::bind(Textures::blockTextures["Grass"]);
+                                    Textures::bind(Textures::blockTextures["Stone"]);
                                     Tile::render(&t, this->level, layer, x,y,z);
                                 }
                             }

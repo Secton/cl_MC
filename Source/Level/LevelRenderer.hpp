@@ -16,7 +16,6 @@
 #include <SDL3/SDL_log.h>
 
 #include <cmath>
-#include <memory>
 #include <vector>
 
 // Nullable behavior of the class from https://stackoverflow.com/a/9663710
@@ -135,14 +134,14 @@ class LevelRenderer: public LevelListener {
         void renderHit(HitResult h) {
             if (!m_null) {
                 glEnable(GL_BLEND);
-                glDisable(GL_TEXTURE_2D);
+                // glDisable(GL_TEXTURE_2D);
                 glBlendFunc(GL_SRC_ALPHA, 1);
 
-                glColor4f(1.f, 1.f, 1.f, (float)((float)std::sin((double)getTime() / 100.f) * 0.2f + 0.4f));
+                glColor4f(1.f, 1.f, 1.f, (float)((float)std::sin((double)getTime() / 100.0) * 0.2f + 0.4f));
                 this->t.init();
                 Tile::renderFace(&this->t, h.x, h.y, h.z, h.f);
                 this->t.flush();
-                glEnable(GL_TEXTURE_2D);
+                // glEnable(GL_TEXTURE_2D);
                 glDisable(GL_BLEND);
             } elseWarn
         }
@@ -175,13 +174,13 @@ class LevelRenderer: public LevelListener {
             } elseWarn
         }
 
-        void tileChanged(int x, int y, int z) {
+        void tileChanged(int x, int y, int z) override {
             this->setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
         }
-        void lightColumnChanged(int x, int z, int y0, int y1) {
+        void lightColumnChanged(int x, int z, int y0, int y1) override {
             this->setDirty(x - 1, y0 - 1, z - 1, x + 1, y1 + 1, z + 1);
         }
-        void allChanged() {
+        void allChanged() override {
             this->setDirty(0, 0, 0, this->level->width, this->level->depth, this->level->height);
         }
 };
