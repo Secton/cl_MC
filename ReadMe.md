@@ -16,30 +16,30 @@ Minecraft [rd-132211](https://minecraft.wiki/w/Java_Edition_pre-Classic_rd-13221
 * This project was made for educational and recreational purposes.
 * This project will not contain source codes from JE 1.0.0 (release) and JE post-1.0.0 (release).
 * The author of this project is not affiliated with Mojang Studios, Microsoft and Notch.
-* [Minecraft is a trademark owned by Microsoft Corportation.](https://trademarks.justia.com/791/45/minecraft-79145431.html)
+* [Minecraft is a trademark owned by Microsoft Corporation.](https://trademarks.justia.com/791/45/minecraft-79145431.html)
 * The author of this project does not claim ownership of this source code.
 * The author of this project has bought a Minecraft Java Edition license officially, therefore,
   the author of this project has got the Minecraft rd-132211's `client.jar` legally.
 * This project shall never contain assets (for example, textures) from Mojang Studios' games.
   The author of this project takes no responsibility for players using game assets
-  from other games in this project.
+  from other games, while using this project.
 
 ## Changes
 * Custom world format that looks actually like a format (Original rd-132211 has only `byte`s stored in)
     * Contains: Width, Height, Depth (`int`); `size_t` Size (unused)
 * Using SDL3 instead of LWJGL2
 * Fullscreen mode (F11 to toggle)
+* Swapped actions for left and right mouse buttons
 
 ### Textures
-* Storing Textures in a dictionary, can be found with a block's name (example: `Textures::blockTextures["Grass"]`)
-    * Do note: Code is still using layers to render, which is, by the way, buggy.
+* Now storing Textures in a dictionary, can be found with a block's name (example: `Textures::blockTextures["Grass"]`)
 * Block textures now stored separately and in Assets/Blocks/*.webp
-* Now using WebP format instead on PNG (because WebP is just better).
+* Now using WebP format instead of PNG (because WebP is just better).
 * Using custom textures instead of original to avoid additional legal trouble.
 
 
-## Discovered bugs (won't fix unless i suddenly come back to the experiment)
-* Chunk's blocks can suddenly become grass depending by their placements (*absolutely weird*), and can temporarily revert back depending on your look angle (*even weirder*)
+## Discovered bugs
+* Chunk's blocks can suddenly become stone depending by their placements (*absolutely weird*), and can temporarily revert back depending on your look angle (*even weirder*)
 * You can sometimes <inline style="color: green;">mine/craft</inline> blocks through blocks (somewhat similar to [seamshots](https://wiki.portal2.sr/Seamshot)?)
 * Block highlight is not rendering... Ugh.
 

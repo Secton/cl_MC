@@ -50,6 +50,8 @@ class Player {
             this->xRot = (float)((double)this->xRot + (double)yo * 0.15);
             if (this->xRot < -90.f) this->xRot = -90.f;
             if (this->xRot >  90.f) this->xRot =  90.f;
+            if (this->yRot < -360.f) this->yRot += 360.f;
+            if (this->yRot > 360.f) this->yRot -= 360.f;
         }
 
         void tick() {

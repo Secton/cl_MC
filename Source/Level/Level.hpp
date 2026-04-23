@@ -102,6 +102,12 @@ class Level {
             std::fread(this->blocks, 1, world.width * world.height * world.depth * sizeof(byte), rawFile);
 
             std::fclose(rawFile);
+            this->calcLightDepths(0, 0, this->width, this->height);
+            int i = 0;
+            while (i < this->levelListeners.size()) {
+                this->levelListeners[i]->allChanged();
+                i++;
+            }
         }
 
         // void save() {

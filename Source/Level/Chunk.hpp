@@ -48,7 +48,6 @@ class Chunk {
                 updates++; rebuiltThisFrame++;
                 glNewList(this->lists + layer, GL_COMPILE);
                 glEnable(GL_TEXTURE_2D);
-                // glBindTexture(3553, (int)texture);
                 t.init();
                 int tiles = 0;
                 int x = this->x0;
