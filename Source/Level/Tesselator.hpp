@@ -9,12 +9,13 @@ class Tesselator {
         float c_vertexBuffer[300000];
         float c_texCoordBuffer[200000];
         float c_colorBuffer[300000];
-        int vertices = 0;
         float u,v; float r,g,b;
         bool hasColor = false;
         bool hasTexture = false;
 
     public:
+        int vertices = 0;
+        
         void flush() {
             glVertexPointer(3, GL_FLOAT, 0, c_vertexBuffer);
 
@@ -34,6 +35,14 @@ class Tesselator {
             
             if (this->hasTexture) glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             if (this->hasColor)   glDisableClientState(GL_COLOR_ARRAY);
+            // glBegin(GL_QUADS);
+            // for (int i = 0; i < this->vertices; i++) {
+            //     if (this->hasTexture) glTexCoord2f(c_texCoordBuffer[i*2], c_texCoordBuffer[i*2 + 1]);
+            //     if (this->hasColor) glColor3f(c_colorBuffer[i * 3], c_colorBuffer[i * 3 + 1], c_colorBuffer[i * 3 + 2]);
+            //     else glColor3f(1.f, 1.f, 1.f);
+            //     glVertex3f(c_vertexBuffer[i * 3], c_vertexBuffer[i * 3 + 1], c_vertexBuffer[i * 3 + 2]);
+            // }
+            // glEnd();
             this->clear();
         }
     
@@ -63,6 +72,7 @@ class Tesselator {
         }
 
         void vertex(float x, float y, float z) {
+            if (this->vertices == 100000) this->flush();
             c_vertexBuffer[this->vertices * 3 + 0] = x;
             c_vertexBuffer[this->vertices * 3 + 1] = y;
             c_vertexBuffer[this->vertices * 3 + 2] = z;
@@ -77,6 +87,5 @@ class Tesselator {
                 c_colorBuffer[this->vertices * 3 + 2] = this->b;
             }
             this->vertices++;
-            if (this->vertices == 100000) this->flush();
         }
 };

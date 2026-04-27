@@ -21,10 +21,10 @@ class Chunk {
     private:
         bool dirty = true;
         int lists = -1;
-        inline static Tesselator t;
     public:
-        inline static int rebuiltThisFrame;
-        inline static int updates;
+        inline static Tesselator t;
+        inline static int rebuiltThisFrame = 0;
+        inline static int updates = 0;
 
         Chunk(Level *level, int x0, int y0, int z0, int x1, int y1, int z1) {
             this->level = level;
@@ -36,9 +36,9 @@ class Chunk {
             this->z1 = z1;
             this->aabb = AABB(x0, y0, z0, x1, y1, z1);
             this->lists = glGenLists(2);
-            t = Tesselator();
-            rebuiltThisFrame = 0;
-            updates = 0;
+            // t = Tesselator();
+            // rebuiltThisFrame = 0;
+            // updates = 0;
         }
     
         private:
@@ -60,10 +60,14 @@ class Chunk {
                                 bool tex = y != this->level->depth * 2 / 3;
                                 tiles++;
                                 if (!tex) {
-                                    Textures::bind(Textures::blockTextures["Grass"]);
+                                    if (Textures::currentBlockTexture != "Grass" && t.vertices > 0) t.flush();
+                                    Textures::bindPRO("Grass");
+                                    // t.init();
                                     Tile::render(&t, this->level, layer, x,y,z);
                                 } else {
-                                    Textures::bind(Textures::blockTextures["Stone"]);
+                                    if (Textures::currentBlockTexture != "Stone" && t.vertices > 0) t.flush();
+                                    Textures::bindPRO("Stone");
+                                    // t.init();
                                     Tile::render(&t, this->level, layer, x,y,z);
                                 }
                             }
@@ -74,6 +78,7 @@ class Chunk {
                     x++;
                 }
                 t.flush();
+                Textures::currentBlockTexture = "";
                 glDisable(GL_TEXTURE_2D);
                 glEndList();
             }

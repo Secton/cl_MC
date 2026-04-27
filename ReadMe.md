@@ -26,20 +26,21 @@ Minecraft [rd-132211](https://minecraft.wiki/w/Java_Edition_pre-Classic_rd-13221
 
 ## Changes
 * Custom world format that looks actually like a format (Original rd-132211 has only `byte`s stored in)
-    * Contains: Width, Height, Depth (`int`); `size_t` Size (unused)
-* Using SDL3 instead of LWJGL2
+    * Contains: Width, Height, Depth (`int`)
+* Using SDL3 instead of LWJGL2 (though i'd like to see you use LWJGL in C++ :〉 )
 * Fullscreen mode (F11 to toggle)
 * Swapped actions for left and right mouse buttons
 
 ### Textures
-* Now storing Textures in a dictionary, can be found with a block's name (example: `Textures::blockTextures["Grass"]`)
+* Now storing Textures in a dictionary, can be found with a block's name (example: `Textures::bindPRO("Grass")`)
 * Block textures now stored separately and in Assets/Blocks/*.webp
 * Now using WebP format instead of PNG (because WebP is just better).
 * Using custom textures instead of original to avoid additional legal trouble.
 
+## Coming soon...
+* Rendering with Vulkan
 
 ## Discovered bugs
-* Chunk's blocks can suddenly become stone depending by their placements (*absolutely weird*), and can temporarily revert back depending on your look angle (*even weirder*)
 * You can sometimes <inline style="color: green;">mine/craft</inline> blocks through blocks (somewhat similar to [seamshots](https://wiki.portal2.sr/Seamshot)?)
 * Block highlight is not rendering... Ugh.
 

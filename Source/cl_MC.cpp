@@ -1,4 +1,5 @@
 #include <exception>
+#include <format>
 #include <vector>
 
 #include <GL/glew.h>
@@ -285,19 +286,19 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     int frames = 0;
     const bool *keyStates = SDL_GetKeyboardState(nullptr);
     try {
-        // if (debugOutput) b_timerTime = SDL_GetTicks();
+        if (debugOutput) b_timerTime = SDL_GetTicks();
         timer.advanceTime();
-        // if (debugOutput) t_timerTime = SDL_GetTicks() - b_timerTime;
+        if (debugOutput) t_timerTime = SDL_GetTicks() - b_timerTime;
         int i = 0;
         // SDL_Log("Timer ticks: %i, pT: %f", timer.ticks, timer.passedTime);
-        // if (debugOutput) b_tickTime = SDL_GetTicks();
+        if (debugOutput) b_tickTime = SDL_GetTicks();
         while (i < timer.ticks) {
             tick(); i++;
         }
-        // if (debugOutput) t_tickTime = SDL_GetTicks() - b_tickTime;
-        // if (debugOutput) b_renderTime = SDL_GetTicks();
+        if (debugOutput) t_tickTime = SDL_GetTicks() - b_tickTime;
+        if (debugOutput) b_renderTime = SDL_GetTicks();
         render(timer.a);
-        // if (debugOutput) t_renderTime = SDL_GetTicks() - b_renderTime;
+        if (debugOutput) t_renderTime = SDL_GetTicks() - b_renderTime;
         // SDL_RenderDebugText()
         frames++;
         while (getTime() >= lastTime + 1000L) {
@@ -313,12 +314,12 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         return SDL_APP_FAILURE;
     }
     if (debugOutput) {
-    //     Uint64 totalTime = SDL_GetTicks() - beginTime;
-    //     /*if (totalTime > 15)*/ SDL_Log("Iterate (Total) - %lo ms", totalTime);
-    //     SDL_Log("▍ Timer - %lo ms", t_timerTime);
-    //     SDL_Log("▍ Tick system - %lo ms", t_tickTime);
-    //     SDL_Log("▍ Rendering - %lo ms", t_renderTime);
-    //     SDL_Log("𜷀▂▂ Profiling frame");
+        Uint64 totalTime = SDL_GetTicks() - beginTime;
+        /*if (totalTime > 15)*/ SDL_Log("Iterate (Total) - %lo ms", totalTime);
+        SDL_Log("▍ Timer - %lo ms", t_timerTime);
+        SDL_Log("▍ Tick system - %lo ms", t_tickTime);
+        SDL_Log("▍ Rendering - %lo ms", t_renderTime);
+        SDL_Log("𜷀▂▂ Profiling frame");
         debugOutput = false;
     }
     return SDL_APP_CONTINUE;

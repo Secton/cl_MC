@@ -7,13 +7,6 @@ class Tile {
     public:
         static void render(Tesselator* t, Level* level, int layer, int x, int y, int z) {
             float br;
-            // Notch's texturesheet position logic
-            // float u0 = (float)this->tex / 16.f;
-            // float u1 = u0 + 0.0624375f;
-            // float v0 = 0.f;
-            // float v1 = v0 + 0.0624375f;
-
-            // New standalone texture logic (temp)
             float u0 = 0.f;
             float u1 = 1.f;
             float v0 = 0.f;

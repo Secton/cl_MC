@@ -3,3 +3,10 @@ Build/
 .cache/
 .vscode/
 World.ReMiLe
+Mods/CSharp/*/bin/
+Mods/CSharp/*/obj/
+
+# For now, modding is work in progress and not ready.
+Mods/
+Libraries/
+Source/Modding.hpp

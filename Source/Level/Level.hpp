@@ -18,7 +18,6 @@
 
 struct ReMiLe1 {
     int width, height, depth;
-    size_t size;
 };
 
 class Level {
