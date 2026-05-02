@@ -39,9 +39,9 @@ Minecraft [rd-132211](https://minecraft.wiki/w/Java_Edition_pre-Classic_rd-13221
 
 ## Coming soon...
 * Rendering with Vulkan
+* Native modding support
 
 ## Discovered bugs
 * You can sometimes <inline style="color: green;">mine/craft</inline> blocks through blocks (somewhat similar to [seamshots](https://wiki.portal2.sr/Seamshot)?)
-* Block highlight is not rendering... Ugh.
 
 </div>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <time.h>
+#include <cstdint>
 #include <chrono>
 
 #define timePoint std::chrono::steady_clock::time_point
@@ -39,7 +39,7 @@ class Timer {
         }
 };
 
-inline long getTime() {
+inline int64_t getTime() {
     // Source: https://stackoverflow.com/questions/2831841/how-to-get-the-time-in-milliseconds-in-c#2834294
     auto time = std::chrono::system_clock::now().time_since_epoch();
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(time);

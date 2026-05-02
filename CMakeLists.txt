@@ -6,6 +6,12 @@ set(OpenGL_GL_PREFERENCE "GLVND")
 
 add_compile_options(-fpermissive)
 
+set(chaosBlocks OFF)
+if(chaosBlocks)
+    message(STATUS "Chaos blocks")
+    add_compile_definitions(chaosBlocks)
+endif()
+
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3 SDL3-shared)
 find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)

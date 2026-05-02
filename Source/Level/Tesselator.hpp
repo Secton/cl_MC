@@ -73,9 +73,21 @@ class Tesselator {
 
         void vertex(float x, float y, float z) {
             if (this->vertices == 100000) this->flush();
+
+        #ifdef chaosBlocks
+            SDL_srand(x * y + y * z + z * (z - x + y));
+            SDL_randf();
+            float xR = SDL_randf() / 4 - 0.25;
+            float yR = SDL_randf() / 4 - 0.25;
+            float zR = SDL_randf() / 4 - 0.25;
+            c_vertexBuffer[this->vertices * 3 + 0] = x + xR;
+            c_vertexBuffer[this->vertices * 3 + 1] = y + yR;
+            c_vertexBuffer[this->vertices * 3 + 2] = z + zR;
+        #else
             c_vertexBuffer[this->vertices * 3 + 0] = x;
             c_vertexBuffer[this->vertices * 3 + 1] = y;
             c_vertexBuffer[this->vertices * 3 + 2] = z;
+        #endif
 
             if (this->hasTexture) {
                 c_texCoordBuffer[this->vertices * 2 + 0] = this->u;

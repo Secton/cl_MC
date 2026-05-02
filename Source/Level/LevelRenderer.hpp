@@ -15,6 +15,7 @@
 #include <GL/glext.h>
 #include <SDL3/SDL_log.h>
 
+#include <SDL3/SDL_stdinc.h>
 #include <cmath>
 #include <vector>
 
@@ -115,7 +116,7 @@ class LevelRenderer: public LevelListener {
                                 while (i < 6) {
                                     glPushName(i);
                                     this->t.init();
-                                    Tile::renderFace(&this->t, x,y,z, i);
+                                    Tile::renderFace(&t, x,y,z, i);
                                     this->t.flush();
                                     glPopName();
                                     i++;
@@ -131,19 +132,17 @@ class LevelRenderer: public LevelListener {
             } elseWarn
         }
 
-        void renderHit(HitResult h) {
-            if (!m_null) {
-                glEnable(GL_BLEND);
-                // glDisable(GL_TEXTURE_2D);
-                glBlendFunc(GL_SRC_ALPHA, 1);
+        void renderHit(HitResult* h) {
+            glEnable(GL_BLEND);
+            // glDisable(GL_TEXTURE_2D);
+            glBlendFunc(GL_SRC_ALPHA, 1);
 
-                glColor4f(1.f, 1.f, 1.f, (float)((float)std::sin((double)getTime() / 100.0) * 0.2f + 0.4f));
-                this->t.init();
-                Tile::renderFace(&this->t, h.x, h.y, h.z, h.f);
-                this->t.flush();
-                // glEnable(GL_TEXTURE_2D);
-                glDisable(GL_BLEND);
-            } elseWarn
+            glColor4f(1.f, 1.f, 1.f, SDL_sin(getTime() / 100.0) * 0.2f + 0.4f);
+            this->t.init();
+            Tile::renderFace(&t, h->x, h->y, h->z, h->f);
+            this->t.flush();
+            // glEnable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
         }
 
         void setDirty(int x0, int y0, int z0, int x1, int y1, int z1) {

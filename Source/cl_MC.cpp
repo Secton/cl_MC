@@ -1,5 +1,4 @@
 #include <exception>
-#include <format>
 #include <vector>
 
 #include <GL/glew.h>
@@ -8,14 +7,7 @@
 #include <GL/glu.h>
 #include <GL/freeglut.h>
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_log.h>
-#include <SDL3/SDL_scancode.h>
-#include <SDL3/SDL_mouse.h>
-#include <SDL3/SDL_video.h>
-#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
-#include <SDL3/SDL_messagebox.h>
 
 #include "HitResult.hpp"
 #include "Player.hpp"
@@ -33,7 +25,7 @@ std::optional<LevelRenderer> levelRenderer;
 Player player = Player(&level);
 GLint viewportBuffer[16];
 GLuint  selectBuffer[2000];
-HitResult* hitResult = nullptr;
+HitResult hitResult = HitResult();
 
 SDL_Window* window;
 
@@ -77,9 +69,7 @@ void pick(float a) {
     glSelectBuffer(2000, selectBuffer);
     glRenderMode(GL_SELECT);
     setupPickCamera(a, width / 2, height / 2);
-    glDisable(GL_TEXTURE_2D);
     levelRenderer->pick(&player);
-    glEnable(GL_TEXTURE_2D);
     int hits = glRenderMode(GL_RENDER);
     long closest = 0L;
     std::array<int, 10> names;
@@ -109,13 +99,13 @@ void pick(float a) {
         i++;
     }
     if (hitNameCount > 0) {
-        HitResult hr = HitResult(names[0], names[1], names[2], names[3], names[4]);
-        hitResult = &hr;
+        hitResult = HitResult(names[0], names[1], names[2], names[3], names[4]);
     } else
-        hitResult = nullptr;
+        hitResult = HitResult();
 }
 
 void render(float a) {
+    pick(a);
     glClear(16640);
     setupCamera(a);
     glEnable(GL_CULL_FACE);
@@ -128,7 +118,7 @@ void render(float a) {
     glEnable(GL_FOG);
     levelRenderer->render(player, 1);
     glDisable(GL_TEXTURE_2D);
-    if (hitResult != nullptr) levelRenderer->renderHit(*hitResult);
+    if (!hitResult.nulled) levelRenderer->renderHit(&hitResult);
     glDisable(GL_FOG);
     SDL_GL_SwapWindow(window);
 }
@@ -177,7 +167,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
             if (initGLEW != 4) return SDL_APP_FAILURE;
             else SDL_Log("That stupid error again, ignoring... Sorry about that!");
         }
-        SDL_Log("%s:%i GLErr: %i (if (0) {ignore;})", __FILE_NAME__, __LINE__, glGetError());
 
         Textures::init();
         levelRenderer.emplace(&level);
@@ -214,18 +203,18 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
             glDisable(GL_TEXTURE_2D);
             pick(timer.a);
             glEnable(GL_TEXTURE_2D);
-            if (event->button.button == SDL_BUTTON_LEFT && hitResult != nullptr) {
-                level.setTile(hitResult->x, hitResult->y, hitResult->z, 0);
-            } else if (event->button.button == SDL_BUTTON_RIGHT && hitResult != nullptr) {
-                int x = hitResult->x;
-                int y = hitResult->y;
-                int z = hitResult->z;
-                if (hitResult->f == 0) --y;
-                if (hitResult->f == 1) ++y;
-                if (hitResult->f == 2) --z;
-                if (hitResult->f == 3) ++z;
-                if (hitResult->f == 4) --x;
-                if (hitResult->f == 5) ++x;
+            if (event->button.button == SDL_BUTTON_LEFT && !hitResult.nulled) {
+                level.setTile(hitResult.x, hitResult.y, hitResult.z, 0);
+            } else if (event->button.button == SDL_BUTTON_RIGHT && !hitResult.nulled) {
+                int x = hitResult.x;
+                int y = hitResult.y;
+                int z = hitResult.z;
+                if (hitResult.f == 0) --y;
+                if (hitResult.f == 1) ++y;
+                if (hitResult.f == 2) --z;
+                if (hitResult.f == 3) ++z;
+                if (hitResult.f == 4) --x;
+                if (hitResult.f == 5) ++x;
                 level.setTile(x, y, z, 1);
             }
             break;
@@ -256,9 +245,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
                 }
                 else {
                     SDL_SetWindowFullscreen(window, true);
-                    SDL_Rect* rect;
-                    SDL_GetDisplayBounds(SDL_GetDisplayForWindow(window), rect);
-                    width = rect->w; height = rect->h;
+                    SDL_Rect rect;
+                    SDL_GetDisplayBounds(SDL_GetDisplayForWindow(window), &rect);
+                    width = rect.w; height = rect.h;
                 }
                 glViewport(0,0,width,height);
             }
@@ -271,17 +260,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
 Uint64 beginTime;
 
-Uint64 b_timerTime;
-Uint64 t_timerTime;
+Uint64 b_timerTime, b_tickTime, b_renderTime;
+Uint64 t_timerTime, t_tickTime, t_renderTime;
 
-Uint64 b_tickTime;
-Uint64 t_tickTime;
-
-Uint64 b_renderTime;
-Uint64 t_renderTime;
 SDL_AppResult SDL_AppIterate(void *appstate) {
-    // if (debugOutput) beginTime = SDL_GetTicks();
-    long lastTime = getTime();
+    if (debugOutput) beginTime = SDL_GetTicks();
+    int64_t lastTime = getTime();
 
     int frames = 0;
     const bool *keyStates = SDL_GetKeyboardState(nullptr);

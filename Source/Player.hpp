@@ -4,7 +4,7 @@
 #include "Physics/AABB.hpp"
 
 #include <SDL3/SDL_keyboard.h>
-#include <cmath>
+#include <SDL3/SDL_stdinc.h>
 #include <vector>
 
 class Player {
@@ -90,9 +90,7 @@ class Player {
 
         void move(float xa, float ya, float za) {
             float xaOrg = xa, yaOrg = ya, zaOrg = za;
-            // int AABBsCount;
             std::vector<AABB> AABBs = this->level->getCubes(this->bb.expand(xa, ya, za));
-            // AABB* AABBs = this->level->getCubes(this->bb.expand(xa, ya, za), &AABBsCount);
             int i = 0;
             while (i < AABBs.size()) {
                 ya = AABBs[i].clipYCollide(this->bb, ya);
@@ -123,9 +121,9 @@ class Player {
         void moveRelative(float xa, float za, float speed) {
             float dist = xa * xa + za * za;
             if (dist < 0.01f) return;
-            dist = speed / (float)std::sqrt(dist);
-            float sin = (float)std::sin((double)this->yRot * SDL_PI_D / 180.0);
-            float cos = (float)std::cos((double)this->yRot * SDL_PI_D / 180.0);
+            dist = speed / (float)SDL_sqrt(dist);
+            float sin = (float)SDL_sin((double)this->yRot * SDL_PI_D / 180.0);
+            float cos = (float)SDL_cos((double)this->yRot * SDL_PI_D / 180.0);
             this->xd += (xa *= dist) * cos - (za *= dist) * sin;
             this->zd += za * cos + xa * sin;
         }

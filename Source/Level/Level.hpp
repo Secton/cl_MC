@@ -8,7 +8,6 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
 #include <vector>
 
 // #include <libbz3.h>
@@ -218,41 +217,6 @@ class Level {
                 }
                 x++;
             }
-            return AABBs;
-        }
-
-        AABB* getCubes(AABB aabb, int *count) {
-            AABB AABBs[] = {};
-            int x0 = (int)aabb.x0;
-            int x1 = (int)(aabb.x1 + 1.f);
-            int y0 = (int)aabb.y0;
-            int y1 = (int)(aabb.y1 + 1.f);
-            int z0 = (int)aabb.z0;
-            int z1 = (int)(aabb.z1 + 1.f);
-            if (x0 < 0) x0 = 0;
-            if (y0 < 0) y0 = 0;
-            if (z0 < 0) z0 = 0;
-            if (x1 > this->width)  x1 = this->width;
-            if (y1 > this->depth)  y1 = this->depth;
-            if (z1 > this->height) z1 = this->height;
-            int i = 0;
-            int x = x0;
-            while (x < x1) {
-                int y = y0;
-                while (y < y1) {
-                    int z = z0;
-                    while (z < z1) {
-                        if (this->isSolidTile(x, y, z)) {
-                            AABBs[i] = AABB(x,y,z, x+1, y+1, z+1);
-                            i++;
-                        }
-                        z++;
-                    }
-                    y++;
-                }
-                x++;
-            }
-            *count = i;
             return AABBs;
         }
 
