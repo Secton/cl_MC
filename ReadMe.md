@@ -24,6 +24,37 @@ Minecraft [rd-132211](https://minecraft.wiki/w/Java_Edition_pre-Classic_rd-13221
   The author of this project takes no responsibility for players using game assets
   from other games, while using this project.
 
+------
+
+## Building and Running
+
+### What to install/have
+#### Everywhere
+* a GPU with OpenGL or Vulkan (for now, through Zink) support
+* Your preferred toolchain/compiler (for example, i use Clang). MinGW probably has a Clang toolchain, but i haven't tried it yet.
+#### on Linux
+`libwebp` `sdl3` `freeglut` `glew` `cmake`
+#### Windows (from Linux)
+`mingw-w64-gcc` `mingw-w64-headers` `mingw-w64-cmake` `mingw-w64-glew` `mingw-w64-sdl3` `mingw-w64-libwebp` `mingw-w64-freeglut`
+
+------
+
+### Linux
+If you know how to use CMake, then this shouldn't be a problem. Just configure and build!
+
+After building, cl_MC should work like a charm! However, if you installed libraries not through a package manager, then you might have to install all them onto your system.
+
+### Windows (from Linux)
+From the root directory of this project, execute this:
+`cmake -B BuildWin -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw64.cmake`
+
+This should configure stuff in the BuildWin directory. Then build by executing this:
+`cmake --build BuildWin`
+
+Then, to run cl_MC on Windows, you have to copy all DLLs required to run cl_MC (i just copied all of them from `/usr/x86_64-w64-mingw32/bin`), the `cl_MC.exe` itself and Assets folder into one folder. Now it **should** run without a problem!
+
+------
+
 ## Changes
 * Custom world format that looks actually like a format (Original rd-132211 has only `byte`s stored in)
     * Contains: Width, Height, Depth (`int`)
