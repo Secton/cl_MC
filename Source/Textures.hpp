@@ -3,7 +3,7 @@
 #include <SDL3/SDL_filesystem.h>
 #include <cstdio>
 #include <cstdlib>
-#include <filesystem>
+#include <exception>
 #include <map>
 #include <string>
 
@@ -27,8 +27,10 @@ class Textures {
         */
         inline static std::map<std::string, int> blockTextures;
         inline static std::string currentBlockTexture = "";
-        inline static void loadTexture(std::filesystem::path resourceName, int mode, GLuint* ib, long id) {
-            if (!blockTextures.contains(("Assets/Blocks" / resourceName).stem())) {
+        inline static void loadTexture(std::string resourceName, int mode, GLuint* ib, long id) {
+                                        // TODO: That's a very bad way to get the base name of file!
+                                        //       This WILL cause issues in future!
+            if (!blockTextures.contains(resourceName.substr(0, resourceName.size() - 5))) {
                 bind(id);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
@@ -36,7 +38,7 @@ class Textures {
                 
                 // unsigned char *img = stbi_load(resourceName.c_str(), &x, &y, &n, 0);
                             // C++ extension functions my ass ↓
-                std::FILE* webpFile = std::fopen(("Assets/Blocks" / resourceName).c_str(), "rb");
+                std::FILE* webpFile = std::fopen(("Assets/Blocks/" + resourceName).c_str(), "rb");
                 std::fseek(webpFile, 0, SEEK_END);
                 long webpSize = std::ftell(webpFile);
                 std::fseek(webpFile, 0, SEEK_SET);
@@ -52,10 +54,13 @@ class Textures {
                 WebPFree(webpTex);
                 // Mipmaps are intentionally not created.
 
-                blockTextures[("Assets/Blocks" / resourceName).stem()] = id;
+                           // [see the TODO comment at the beginning of this function]
+                blockTextures[resourceName.substr(0, resourceName.size() - 5)] = id;
+                SDL_Log("Added a texture %s with id %lu", resourceName.substr(0, resourceName.size() - 5).c_str(), id);
             } else {
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "%s does not exist!!", resourceName.c_str());
-                throw "%s is not existing!", resourceName.c_str();
+                // throw std::exception((resourceName + " is not existing!").c_str());
+                throw std::exception();
             }
         }
         inline static void loadBlockTextures(int mode) {

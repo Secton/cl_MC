@@ -75,7 +75,8 @@ class Tesselator {
             if (this->vertices == 100000) this->flush();
 
         #ifdef chaosBlocks
-            SDL_srand(x * y + y * z + z * (z - x + y));
+            // SDL_srand(x * y + y * z + z * (z - x + y));
+            SDL_srand(SDL_sin(x*y*z + (x+1)*(y+1)*(z+1)) * 43758.5453123);
             SDL_randf();
             float xR = SDL_randf() / 4 - 0.25;
             float yR = SDL_randf() / 4 - 0.25;

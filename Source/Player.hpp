@@ -61,20 +61,13 @@ class Player {
             float xa = 0.f, ya = 0.f;
             const bool *keyStates = SDL_GetKeyboardState(nullptr);
             
-            // Now now, decompiled code seems to use numbers instead of enums,
-            // which makes sense, but it leaves me no choice but to guess the keys.
-            // I could've looked up the LWJGL's docs for an old version, but
-            // i've decided not to.
             if (keyStates[SDL_SCANCODE_R]) this->resetPos();
             
             if (keyStates[SDL_SCANCODE_W] || keyStates[SDL_SCANCODE_UP   ]) ya -= 1.f;
             if (keyStates[SDL_SCANCODE_S] || keyStates[SDL_SCANCODE_DOWN ]) ya += 1.f;
             if (keyStates[SDL_SCANCODE_A] || keyStates[SDL_SCANCODE_LEFT ]) xa -= 1.f;
             if (keyStates[SDL_SCANCODE_D] || keyStates[SDL_SCANCODE_RIGHT]) xa += 1.f;
-            // Well the key numbers seemed a bit weird, and after
-            // counting down to D key, it turns out that those are relative to my
-            // keyboard layout!
-            if ((keyStates[SDL_SCANCODE_SPACE]) && this->onGround) // TODO: figure out what key 219 might be!
+            if ((keyStates[SDL_SCANCODE_SPACE]) && this->onGround)
                 this->yd = 0.12f;
             this->moveRelative(xa, ya, this->onGround ? 0.02f : 0.005f);
             this->yd = (float)((double)this->yd - 0.005);

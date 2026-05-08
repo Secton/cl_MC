@@ -1,6 +1,29 @@
-#include <exception>
-#include <vector>
+#ifdef __MINGW64__
+#undef uintptr_t
+#undef imaxabs
+#undef ssize_t
+#undef time_t
+#undef div_t
+#undef ldiv_t
+#undef at_quick_exit
+#undef putenv
+#undef lldiv_t
+#undef execve
+#undef execv
+#undef execvp
+#undef wctype_t
+#endif
 
+#include <exception>
+#ifdef __MINGW64__
+#include <GL/glew.h>
+#include </usr/x86_64-w64-mingw32/include/GL/glext.h>
+#include </usr/x86_64-w64-mingw32/include/GL/gl.h>
+#include </usr/x86_64-w64-mingw32/include/GL/glu.h>
+#include </usr/x86_64-w64-mingw32/include/GL/freeglut.h>
+#include </usr/x86_64-w64-mingw32/include/SDL3/SDL.h>
+#include </usr/x86_64-w64-mingw32/include/SDL3/SDL_main.h>
+#else
 #include <GL/glew.h>
 #include <GL/glext.h>
 #include <GL/gl.h>
@@ -8,6 +31,7 @@
 #include <GL/freeglut.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#endif
 
 #include "HitResult.hpp"
 #include "Player.hpp"
@@ -18,7 +42,7 @@
 
 const bool FULLSCREEN_MODE = false;
 int width = 1024, height = 768;
-std::vector<float> fogColor;
+float fogColor[4];
 Timer timer = Timer(60.f);
 Level level = Level(256, 256, 64);
 std::optional<LevelRenderer> levelRenderer;
@@ -112,7 +136,7 @@ void render(float a) {
     glEnable(GL_FOG);
     glFogi(GL_FOG_MODE, 2048);
     glFogf(GL_FOG_DENSITY, 0.2f);
-    glFogfv(GL_FOG_COLOR, fogColor.data());
+    glFogfv(GL_FOG_COLOR, fogColor);
     glDisable(GL_FOG);
     levelRenderer->render(player, 0);
     glEnable(GL_FOG);
@@ -143,10 +167,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
         float fr = 0.5f;
         float fg = 0.8f;
         float fb = 1.0f;
-        fogColor = {(float)(col >> 16 & 0xFF) / 255.f,
-                    (float)(col >> 8  & 0xFF) / 255.f,
-                    (float)(col       & 0xFF) / 255.0f,
-                    1.0f};
+        fogColor[0] = (float)(col >> 16 & 0xFF) / 255.f,
+        fogColor[1] = (float)(col >> 8  & 0xFF) / 255.f,
+        fogColor[2] = (float)(col       & 0xFF) / 255.0f,
+        fogColor[3] = 1.0f;
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);

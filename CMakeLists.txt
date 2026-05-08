@@ -19,5 +19,16 @@ find_package(GLEW REQUIRED)
 
 add_executable(cl_MC Source/cl_MC.cpp)
 target_compile_definitions(cl_MC PUBLIC SDL_MAIN_USE_CALLBACKS=1)
-target_link_libraries(cl_MC PUBLIC SDL3::SDL3 SDL3::SDL3-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} webp)
+if (NOT MINGW)
+    target_link_libraries(cl_MC PUBLIC SDL3::SDL3 SDL3::SDL3-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} webp)
+else()
+    target_link_libraries(cl_MC PUBLIC
+        SDL3::SDL3
+        SDL3::SDL3-shared
+        ${OPENGL_LIBRARIES}
+        /usr/x86_64-w64-mingw32/lib/libglew32.dll.a
+        /usr/x86_64-w64-mingw32/lib/libglew32.a
+        /usr/x86_64-w64-mingw32/lib/libfreeglut.dll.a
+        webp)
+endif()
 target_include_directories(cl_MC PUBLIC Source Source/Level Libraries Libraries/Wasmtime/include)

@@ -10,7 +10,7 @@
 
 class Chunk {
     public:
-        AABB aabb = AABB(0,0,0,0,0,0);
+        AABB aabb = AABB();
         /*const*/ Level* level = nullptr;
         /*const*/ int x0;
         /*const*/ int y0;
@@ -36,9 +36,6 @@ class Chunk {
             this->z1 = z1;
             this->aabb = AABB(x0, y0, z0, x1, y1, z1);
             this->lists = glGenLists(2);
-            // t = Tesselator();
-            // rebuiltThisFrame = 0;
-            // updates = 0;
         }
     
         private:
@@ -48,7 +45,7 @@ class Chunk {
                 updates++; rebuiltThisFrame++;
                 glNewList(this->lists + layer, GL_COMPILE);
                 glEnable(GL_TEXTURE_2D);
-                t.init();
+                this->t.init();
                 int tiles = 0;
                 int x = this->x0;
                 while (x < this->x1) {

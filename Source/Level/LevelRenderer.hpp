@@ -14,17 +14,13 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <SDL3/SDL_log.h>
-
 #include <SDL3/SDL_stdinc.h>
-#include <cmath>
-#include <vector>
 
-// Nullable behavior of the class from https://stackoverflow.com/a/9663710
-#define elseWarn else SDL_LogError(SDL_LOG_CATEGORY_ERROR, "LevelRenderer has not been instanced! This function is not static!");
+#include <SDL3/SDL_timer.h>
+#include <vector>
 
 class LevelRenderer: public LevelListener {
     private:
-        bool m_null;
         inline static const int CHUNK_SIZE = 16;
         Level* level = nullptr;
         std::vector<Chunk> chunks = {};
@@ -32,12 +28,8 @@ class LevelRenderer: public LevelListener {
         Tesselator t = Tesselator();
 
     public:
-        void setnull() { m_null = true; }
-        bool isnull() const { return m_null; }
-        LevelRenderer() {
-            m_null = true;
-        }
-        LevelRenderer(Level* level) : m_null(false) {
+        LevelRenderer() {}
+        LevelRenderer(Level* level) {
             this->level = level;
             level->addListener(*this);
             // level->levelListeners.emplace_back(std::make_unique<LevelRenderer>(this));
@@ -73,63 +65,55 @@ class LevelRenderer: public LevelListener {
             level->removeListener(*this);
         }
 
-        // std::nullptr_t operator=(std::nullptr_t other) {
-        //     return nullptr;
-        // }
-
         void render(Player player, int layer) {
-            if (!m_null) {
-                Chunk::rebuiltThisFrame = 0;
-                Frustum frustum = Frustum::getFrustum();
-                int i = 0;
-                while (i < this->chunks.size()) {
-                    if (frustum.cubeInFrustum(this->chunks[i].aabb))
-                        this->chunks[i].render(layer);
-                    i++;
-                }
-            } elseWarn
+            Chunk::rebuiltThisFrame = 0;
+            Frustum frustum = Frustum::getFrustum();
+            int i = 0;
+            while (i < this->chunks.size()) {
+                if (frustum.cubeInFrustum(this->chunks[i].aabb))
+                    this->chunks[i].render(layer);
+                i++;
+            }
         }
 
         void pick(Player* player) {
-            if (!m_null) {
-                float r = 3.f;
-                AABB box = player->bb.grow(r, r, r);
-                int x0 = (int)box.x0;
-                int x1 = (int)(box.x1 + 1.f);
-                int y0 = (int)box.y0;
-                int y1 = (int)(box.y1 + 1.f);
-                int z0 = (int)box.z0;
-                int z1 = (int)(box.z1 + 1.f);
-                glInitNames();
-                int x = x0;
-                while (x < x1) {
-                    glPushName(x);
-                    int y = y0;
-                    while (y < y1) {
-                        glPushName(y);
-                        int z = z0;
-                        while (z < z1) {
-                            glPushName(z);
-                            if (this->level->isSolidTile(x, y, z)) {
-                                glPushName(0);
-                                int i = 0;
-                                while (i < 6) {
-                                    glPushName(i);
-                                    this->t.init();
-                                    Tile::renderFace(&t, x,y,z, i);
-                                    this->t.flush();
-                                    glPopName();
-                                    i++;
-                                }
+            float r = 3.f;
+            AABB box = player->bb.grow(r, r, r);
+            int x0 = (int)box.x0;
+            int x1 = (int)(box.x1 + 1.f);
+            int y0 = (int)box.y0;
+            int y1 = (int)(box.y1 + 1.f);
+            int z0 = (int)box.z0;
+            int z1 = (int)(box.z1 + 1.f);
+            glInitNames();
+            int x = x0;
+            while (x < x1) {
+                glPushName(x);
+                int y = y0;
+                while (y < y1) {
+                    glPushName(y);
+                    int z = z0;
+                    while (z < z1) {
+                        glPushName(z);
+                        if (this->level->isSolidTile(x, y, z)) {
+                            glPushName(0);
+                            int i = 0;
+                            while (i < 6) {
+                                glPushName(i);
+                                this->t.init();
+                                Tile::renderFace(&t, x,y,z, i);
+                                this->t.flush();
                                 glPopName();
+                                i++;
                             }
-                            glPopName(); z++;
+                            glPopName();
                         }
-                        glPopName(); y++;
+                        glPopName(); z++;
                     }
-                    glPopName(); x++;
+                    glPopName(); y++;
                 }
-            } elseWarn
+                glPopName(); x++;
+            }
         }
 
         void renderHit(HitResult* h) {
@@ -146,31 +130,29 @@ class LevelRenderer: public LevelListener {
         }
 
         void setDirty(int x0, int y0, int z0, int x1, int y1, int z1) {
-            if (!m_null) {
-                x0 /= 16; x1 /= 16;
-                y0 /= 16; y1 /= 16;
-                z0 /= 16; z1 /= 16;
-                if (x0 < 0) x0 = 0;
-                if (y0 < 0) y0 = 0;
-                if (z0 < 0) z0 = 0;
-                if (x1 >= this->xChunks) x1 = this->xChunks - 1;
-                if (y1 >= this->yChunks) y1 = this->yChunks - 1;
-                if (z1 >= this->zChunks) z1 = this->zChunks - 1;
+            x0 /= 16; x1 /= 16;
+            y0 /= 16; y1 /= 16;
+            z0 /= 16; z1 /= 16;
+            if (x0 < 0) x0 = 0;
+            if (y0 < 0) y0 = 0;
+            if (z0 < 0) z0 = 0;
+            if (x1 >= this->xChunks) x1 = this->xChunks - 1;
+            if (y1 >= this->yChunks) y1 = this->yChunks - 1;
+            if (z1 >= this->zChunks) z1 = this->zChunks - 1;
 
-                int x = x0;
-                while (x <= x1) {
-                    int y = y0;
-                    while (y <= y1) {
-                        int z = z0;
-                        while (z <= z1) {
-                            this->chunks[(x + y * this->xChunks) * this->zChunks + z].setDirty();
-                            z++;
-                        }
-                        y++;
+            int x = x0;
+            while (x <= x1) {
+                int y = y0;
+                while (y <= y1) {
+                    int z = z0;
+                    while (z <= z1) {
+                        this->chunks[(x + y * this->xChunks) * this->zChunks + z].setDirty();
+                        z++;
                     }
-                    x++;
+                    y++;
                 }
-            } elseWarn
+                x++;
+            }
         }
 
         void tileChanged(int x, int y, int z) override {

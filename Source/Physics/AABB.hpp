@@ -7,6 +7,15 @@ class AABB {
         float x0, y0, z0;
         float x1, y1, z1;
 
+        AABB() {
+            this->x0 = 0;
+            this->y0 = 0;
+            this->z0 = 0;
+            this->x1 = 1;
+            this->y1 = 1;
+            this->z1 = 1;
+        }
+
         AABB(float x0, float y0, float z0, float x1, float y1, float z1) {
             this->x0 = x0;
             this->y0 = y0;
