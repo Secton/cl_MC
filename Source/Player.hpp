@@ -32,9 +32,12 @@ class Player {
 
     private:
         void resetPos() {
-            float x = SDL_randf() * (float)this->level->width;
+            // float x = SDL_randf() * (float)this->level->width;
             float y = this->level->depth + 10;
-            float z = SDL_randf() * (float)this->level->height;
+            // float z = SDL_randf() * (float)this->level->height;
+            float x = 120.f, z = 170.f;
+            this->xRot = 0.f;
+            this->yRot = 250.f;
             this->setPos(x,y,z);
         }
 

@@ -6,7 +6,7 @@ set(OpenGL_GL_PREFERENCE "GLVND")
 
 add_compile_options(-fpermissive)
 
-set(chaosBlocks OFF)
+set(chaosBlocks ON)
 if(chaosBlocks)
     message(STATUS "Chaos blocks")
     add_compile_definitions(chaosBlocks)

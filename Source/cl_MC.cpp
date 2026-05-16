@@ -103,9 +103,9 @@ void pick(float a) {
     while (i < hits) {
         int j;
         int nameCount = selectBuffer[pos++];
-        long minZ = selectBuffer[pos++];
+        GLuint minZ = selectBuffer[pos++];
         pos++;
-        long dist = minZ;
+        GLuint dist = minZ;
         if (dist < closest || i == 0) {
             closest = dist;
             hitNameCount = nameCount;
@@ -179,7 +179,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+		// SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
         window = SDL_CreateWindow("Game", 1024, 768, SDL_WINDOW_OPENGL);
         SDL_GL_CreateContext(window);
@@ -323,11 +323,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     }
     if (debugOutput) {
         Uint64 totalTime = SDL_GetTicks() - beginTime;
-        /*if (totalTime > 15)*/ SDL_Log("Iterate (Total) - %lo ms", totalTime);
-        SDL_Log("▍ Timer - %lo ms", t_timerTime);
-        SDL_Log("▍ Tick system - %lo ms", t_tickTime);
-        SDL_Log("▍ Rendering - %lo ms", t_renderTime);
-        SDL_Log("𜷀▂▂ Profiling frame");
+        SDL_Log("Frame profiler ⏱️");
+        SDL_Log("├ Timer - %lo ms", t_timerTime);
+        SDL_Log("├ Tick system - %lo ms", t_tickTime);
+        SDL_Log("├ Rendering - %lo ms", t_renderTime);
+        SDL_Log("┕ 𝐈𝐭𝐞𝐫𝐚𝐭𝐞 (Total) - %lo ms", totalTime);
         debugOutput = false;
     }
     return SDL_APP_CONTINUE;
